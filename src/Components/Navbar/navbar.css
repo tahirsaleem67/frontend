@@ -1,0 +1,26 @@
+.navbar-nav a, .navbar-right a{
+  color: black !important;
+}
+.navbar_right .nav-link{
+color: black !important;
+padding: 0px 10px !important;
+}
+/*
+  .navbar-toggler {
+    position: absolute;
+    top: 21px;
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: box-shadow .15s ease-in-out;
+}
+.navbar-toggler:focus {
+    text-decoration: none !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+.navbar-light .navbar-toggler {
+    color: black !important;
+    border: none !important;
+    border-color: none !important; 
+}
+      */
