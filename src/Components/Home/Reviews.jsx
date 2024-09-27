@@ -39,7 +39,7 @@ const Reviews = () => {
         <div className='container my-5'>
             <div className='row'>
                 <div className='col-12 mb-5'>
-                    <h1 className='text-center home_heading'>OUR HAPPY CUSTOMERS</h1>
+                    <h1 className='text-center home_heading text-capitalize'>Our Happy Customers</h1>
                 </div>
                 <div className='h_box_main'>
                     {loading ? (
@@ -51,7 +51,7 @@ const Reviews = () => {
                         </div>
                     ) : (comments.map((item, index) => {
                         return <>
-                            <div className='card border rounded-2 p-2' style={{ width: "270px" }} key={index}>
+                            <div className='card border rounded-2 p-1' style={{ width: "270px" }} key={index}>
                                 <div className="card_img mb-2">
                                     <img src={item?.image} className="text-center" alt={item?.title} />
                                 </div>

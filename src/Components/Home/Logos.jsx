@@ -11,7 +11,7 @@ const Logos = () => {
       <div className='container-fluid bg-dark'>
         <div className='row'>
           <div className='col'>
-            <div className='d-flex flex-wrap justify-content-center align-items-center py-3'>
+            <div className='d-flex flex-wrap justify-content-center align-items-center py-1'>
               <Swiper
                 className="mySwiper"
                 slidesPerView={1}
@@ -22,9 +22,9 @@ const Logos = () => {
                 }}
               >
 
-                <SwiperSlide><p className="m-0 fs-3">30% OFF</p></SwiperSlide>
-                <SwiperSlide><p className="m-0 fs-3">FREE HOMEDELIVERY</p></SwiperSlide>
-                <SwiperSlide><p className="m-0 fs-3">BUMPER WINTER OFFER</p></SwiperSlide>
+                <SwiperSlide><p className="m-0 fs-5">30% Off</p></SwiperSlide>
+                <SwiperSlide><p className="m-0 fs-5">Free Home Delivery</p></SwiperSlide>
+                <SwiperSlide><p className="m-0 fs-5">Bumper Winter Offer</p></SwiperSlide>
               </Swiper>
             </div>
           </div>

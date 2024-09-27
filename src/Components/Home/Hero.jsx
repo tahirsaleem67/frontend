@@ -6,6 +6,11 @@ import { Autoplay } from 'swiper/modules';
 import "./hero.css"
 const Hero = () => {
     return <>
+    <>
+  
+
+</>
+
         <div className='container-fluid ' style={{ backgroundColor: "#F2F0F1" }}>
             <div className='row '>
                 <div className='col-lg-6 col-md-6 col-sm-12 px-lg-5 px-md-5 px-sm-3 pt-5 hero_container'>
@@ -38,24 +43,6 @@ const Hero = () => {
                     <div>
                         <img src="/home.png" className='home_img img-fluid' alt="" />
                     </div>
-                {/* <Swiper
-                        slidesPerView={1}
-                        autoplay={{ delay: 4500 }}
-                        modules={[Autoplay]}
-                        className="mySwiper">
-                             <SwiperSlide className='hero_slide'>
-                                <img src="home.pmg" alt="No network"
-                                />
-                            </SwiperSlide>
-                            <SwiperSlide className='hero_slide'>
-                                <img src="simple-black-t-shirt-worn-by-man.jpg" alt="No network"
-                                />
-                            </SwiperSlide>
-                            <SwiperSlide className='hero_slide'>
-                                <img src="teenage-boy-white-tee-basic-youth-apparel-shoot.jpg" alt="No network"
-                               />
-                            </SwiperSlide>
-                    </Swiper> */}
                 </div>
             </div>
         </div>

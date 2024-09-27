@@ -52,58 +52,61 @@ const Footer = () => {
                                     From women to men.
                                 </p>
                             </div>
-                            <div className="col-md-5 col-lg-5 col-xl-5 col-sm-12 mx-auto mb-4
-                             footer_div">
-                                <div>
-                                    <h6 className="text-uppercase fw-bolder mb-4">Information</h6>
-                                    <p>
-                                        <a href="#!" className="text-reset">
-                                            Shop Now
-                                        </a>
-                                    </p>
-                                    <p>
-                                        <a href="#!" className="text-reset">
-                                            Reviews
-                                        </a>
-                                    </p>
-                                    <p>
-                                        <a href="#!" className="text-reset">
-                                            New Arrival
-                                        </a>
-                                    </p>
-                                    <p>
-                                        <a href="#!" className="text-reset">
-                                            Top Selling
-                                        </a>
-                                    </p>
-                                </div>
-                                <div className="">
-                                    <div>
-                                        <h6 className="text-uppercase fw-bolder mb-4">Useful links</h6>
-                                        <p>
-                                            <NavLink to="products" className="text-reset">
-                                                Products
-                                            </NavLink>
-                                        </p>
-                                        <p>
-                                            <NavLink to="products" className="text-reset">
-                                                Special Offers
-                                            </NavLink>
-                                        </p>
-                                        <p>
-                                            <NavLink to="contact" className="text-reset">
-                                                Contact
-                                            </NavLink>
-                                        </p>
-                                        <p>
-                                            <NavLink to="/faqs" className="text-reset">
-                                                FAQ's
-                                            </NavLink>
-                                        </p>
+                            <div className="col-md-5 col-lg-5 col-xl-5 col-sm-12 mx-auto mb-">
+                                <div className='row d-flex justify-content-center'>
+                                    <div className='col-6'>
+
+                                        <div>
+                                            <h6 className="text-uppercase fw-bolder mb-4">Information</h6>
+                                            <p>
+                                                <a href="#!" className="text-reset">
+                                                    Shop Now
+                                                </a>
+                                            </p>
+                                            <p>
+                                                <a href="#!" className="text-reset">
+                                                    Reviews
+                                                </a>
+                                            </p>
+                                            <p>
+                                                <a href="#!" className="text-reset">
+                                                    New Arrival
+                                                </a>
+                                            </p>
+                                            <p>
+                                                <a href="#!" className="text-reset">
+                                                    Top Selling
+                                                </a>
+                                            </p>
+                                        </div>
                                     </div>
+                                    <div className='col-6'>
+                                        <div>
+                                            <h6 className="text-uppercase fw-bolder mb-4">Useful links</h6>
+                                            <p>
+                                                <NavLink to="products" className="text-reset">
+                                                    Products
+                                                </NavLink>
+                                            </p>
+                                            <p>
+                                                <NavLink to="products" className="text-reset">
+                                                    Special Offers
+                                                </NavLink>
+                                            </p>
+                                            <p>
+                                                <NavLink to="contact" className="text-reset">
+                                                    Contact
+                                                </NavLink>
+                                            </p>
+                                            <p>
+                                                <NavLink to="/faqs" className="text-reset">
+                                                    FAQ's
+                                                </NavLink>
+                                            </p>
+                                        </div>
 
+                                    </div>
                                 </div>
-
                             </div>
                             <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                                 <h6 className="text-uppercase fw-bolder mb-4">Contact</h6>

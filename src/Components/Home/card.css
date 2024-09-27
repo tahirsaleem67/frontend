@@ -3,7 +3,7 @@
     width: 100%;
     margin: auto;
     display: flex;
-    gap: 30px !important;
+    gap: 10px !important;
     justify-content: space-between;
     overflow-x: scroll;
     scrollbar-width: none;
@@ -41,13 +41,13 @@
 }
 
 .card img {
-    max-width: 90% !important;
-    max-height: 90% !important;
+    max-width: 95% !important;
+    max-height: 95% !important;
 }
 
 .card_title {
     text-transform: capitalize;
-    font-weight: 700;
+    font-weight: 500;
     margin-top: 10px;
     text-align: center;
     color: black !important;

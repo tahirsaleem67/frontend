@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Logos from './Components/Home/Logos';
 import Navbar from './Components/Navbar/Navbar';
 import Home from './Components/Home/Home';
 import Products from './Components/Products/Products';
@@ -58,8 +59,10 @@ function App() {
 return <>
 
     <BrowserRouter>
+      <Logos/>
       <Navbar   />
           <Routes>
+            
           <Route exact path='/' element={<Home />} />
               {/*  User */}
               <Route exact path='/signup' element={<Signup />} />

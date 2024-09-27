@@ -1,6 +1,5 @@
 import React from 'react'
 import Hero from './Hero'
-import Logos from './Logos'
 import Arrivals from './Arrivals'
 import Top from './Top'
 import Style from './Style'
@@ -12,7 +11,6 @@ const Home = () => {
   return <>
 
   <Hero/>
-  <Logos/>
   <Collections/>
   <Arrivals/>
   {/* <Top/>
