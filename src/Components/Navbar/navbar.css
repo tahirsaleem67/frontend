@@ -15,6 +15,9 @@
 .navbar_small {
   display: none;
 }
+.navbar-brand img{
+  width: 70px;
+}
 
 .side_nav {
   width: 100%;

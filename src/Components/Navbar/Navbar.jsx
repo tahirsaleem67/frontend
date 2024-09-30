@@ -57,7 +57,7 @@ const Navbar = () => {
       <div className="row">
         <div className="col-lg-2 col-sm-2 d-flex no-wrap align-items-center ">
           <a className="navbar-brand" href="/">
-            <img src="/logo.png" alt="" />
+            <img src="/logo.png" alt=""  />
           </a>
         </div>
         <div className="col-lg-8 col-md-8 d-flex no-wrap align-items-center justify-content-center gap-5 fs-5">
