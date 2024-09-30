@@ -10,76 +10,129 @@ import Loader from "../Loader/Loader"
 import { FaStar } from "react-icons/fa"
 import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux";
+import { RxCross2 } from "react-icons/rx";
 
 import "./review.css"
 
 const Review = () => {
 
-    const cu = useSelector((store) => store.userSection.cu);
+
+    let {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+      } = useForm();
+
+    let cu = useSelector((store) => store.userSection.cu);
+    const [formData, setFormData] = useState(new FormData());
     const allComments = useSelector((store) => store.Comment.comment);
-    const dispatch = useDispatch()
-
+    
     const [comments, setComments] = useState([])
-    const [sucess, setSucess] = useState(false)
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState(false)
 
-    let { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const dispatch = useDispatch();
 
-    const toggleVerify = () => {
-        setSucess(!sucess);
-    };
-
-
-    const Comment = async (cmnt) => {
-        setLoading(true)
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, cmnt);
-            if (response.data.message === "Comment Added") {
-                dispatch({
-                    type: "ADD_COMMENT",
-                    payload: response.data.alldata,
-                });
-                setComments(response.data.alldata)
-                setLoading(false)
-                reset();
-                toggleVerify();
-                // toast.success("Feedback submitted");
-            } else {
-                // toast.error("Error occurred");
-            }
-        } catch (e) {
+    const openForm = () => {
+        setForm(!form)
+      }
+    
+      const Comment = async (cmnt) => {
+        console.log("comment working");
+        setLoading(true);
+      
+        let mediaUrl = "";
+      
+        if (cmnt.image && cmnt.image[0] && cmnt.video && cmnt.video[0]) {
+          setLoading(false);
+          return toast.warning("Select each media");
         }
-    };
-    useEffect(() => {
+      
+        if (cmnt.image && cmnt.image[0]) {
+          const imageType = cmnt.image[0].type;
+      
+          if (!imageType.startsWith("image/")) {
+            setLoading(false);
+          return toast.warning("Select valid image file");
+          }
+      
+          const formData = new FormData();
+          formData.append('file', cmnt.image[0]);
+          formData.append('upload_preset', 'zonfnjjo');
+          try {
+            const response = await axios.post("https://api.cloudinary.com/v1_1/dlw9hxjr4/image/upload", formData);
+            mediaUrl = response.data.url;
+            // console.log("Image uploaded successfully");
+          } catch (error) {
+            // console.error("Image upload failed", error);
+          }
+        }
+      
+        if (cmnt.video && cmnt.video[0]) {
+          const videoType = cmnt.video[0].type;
+      
 
+          if (!videoType.startsWith("video/")) {
+            setLoading(false);
+          return toast.warning("Select valid video format");
+          }
+          const formData = new FormData();
+          formData.append('file', cmnt.video[0]);
+          formData.append('upload_preset', 'zonfnjjo');
+          try {
+            const response = await axios.post("https://api.cloudinary.com/v1_1/dlw9hxjr4/video/upload", formData);
+            mediaUrl = response.data.url;
+            // console.log("Video uploaded successfully");
+          } catch (error) {
+            // console.error("Video upload failed", error);
+          }
+        }
+      
+        try {
+          cmnt.mediaUrl = mediaUrl;
+      
+          const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, cmnt);
+      
+          if (response.data.message === "Comment Added") {
+            dispatch({
+              type: "ADD_COMMENT",
+              payload: response.data.alldata,
+            });
+            setComments(response.data.alldata);
+            setLoading(false);
+            setForm(false)
+            reset();
+            toast.success("Feedback submitted");
+          }
+        } catch (e) {
+        //   console.error("Comment submission failed", e);
+        }
+      };
+      
+      
+    
+      useEffect(() => {
         setLoading(true);
         try {
-            axios.get(`${process.env.REACT_APP_BASE_URL}/comments`).then((res) => {
-                if (res) {
-                    dispatch({ type: "ADD_COMMENT", payload: res.data });
-                    setLoading(false)
-                }
-            });
+          axios.get(`${process.env.REACT_APP_BASE_URL}/comments`).then((res) => {
+            if (res) {
+              dispatch({ type: "ADD_COMMENT", payload: res.data });
+              setLoading(false)
+            }
+          });
         } catch (e) {
         }
-    }, []);
-
-    useEffect(() => {
+      }, []);
+    
+      useEffect(() => {
         if (allComments) {
-            setComments(allComments);
-            setLoading(false);
+          setComments(allComments);
+          setLoading(false);
         }
-    }, [allComments]);
-
-    useEffect(() => {
-        if (sucess) {
-            const timeoutId = setTimeout(() => {
-                toggleVerify();
-            }, 5000);
-
-            return () => clearTimeout(timeoutId);
-        }
-    }, [sucess]);
+      }, [allComments]);
+    
+      
 
     const formatDateTime = (dateStr) => {
         const options = {
@@ -93,111 +146,147 @@ const Review = () => {
     };
 
     return <>
-        <div className='container-fluid p-0 ' id='review'>
-            <div className='row pt-lg-0 pt-1'>
-                <div className='col-lg-6 col-md-6 col-sm-12 pt-5' style={{ backgroundColor: "rgb(2, 2, 94)" }}>
-                    <h1 className='text-center fs-1 fw-bolder' style={{ color: "white" }}>Our Customers</h1>
-                    <p className='text-center fs-6' style={{ color: "white" }}>Over 10,000 happy customers!</p>
-                    {loading ? (
-                        <div className='col-lg-12 col-sm-12 d-flex align-items-center justify-content-center' style={{ height: "80vh" }} >
-                            <Loader />
+        <div className='container-fluid my-5' style={{ backgroundColor: "#F2F0F1" }}>
+            <div className='container'>
+                <div className="row d-flex justify-content-center">
+                    {!form && (
+                        <div className="col-12 p-2" style={{ backgroundColor: "#F2F0F1" }}>
+                            <div className="border p-5 d-flex flex-column justify-content-center align-items-center">
+                                <p className="fw-bolder fs-3">Customer Reviews</p>
+                                <p className="text-center fs-5">No review yet. Any feedback? Let us know </p>
+                                <div className="">
+                                    <button className="button-submit px-3" onClick={openForm}>Write a review</button>
+                                </div>
+                            </div>
                         </div>
-                    ) : comments.length === 0 ? (
-                        <div className='col-lg-12 col-sm-12 d-flex align-items-center justify-content-center' style={{ height: "50vh" }} >
-                            <h2 style={{ color: "white" }}>No Review available</h2>
-                        </div>
-                    ) : (
-                        <div className='mt-5'>
-                            <Swiper
-                                slidesPerView={2}
-                                spaceBetween={30}
-                                centeredSlides={true}
-                                autoplay={{ delay: 3000 }}
-                                modules={[Autoplay]}
-                                className="mySwiper"
-                            >
-                                {comments?.map((item, index) => {
-                                    return <SwiperSlide className='review_slide' key={index}>
-                                        <div className='px-3 py-2'>
-                                            <p className='review_detail text-center' >
-                                                {item.comment}
-                                            </p>
-                                            <p className='text-center' style={{ color: "white" }}>{item.name}</p>
-                                            <p className='text-center' style={{ fontWeight: "700", color:"#F7EEDD" }}>{formatDateTime(item.date1 ? item.date1 : item.date)}</p>
+                    )}
+
+                    {form && (
+                        <>
+                            <div className="col-lg-6 col-md-6 col-sm-12 p-3 border">
+                                <div className="d-flex justify-content-between">
+                                    <h1 className="fs-2 fw-bolder">Reviews</h1>
+                                    <p className="m-0 p-0 fs-3" onClick={() => setForm(false)}><RxCross2 /></p>
+                                </div>
+                                <form action="" onSubmit={handleSubmit(Comment)}>
+                                    <div class="mb-3">
+                                        <label
+                                            className="form-label"
+                                        >Your Name</label>
+                                        <input type="text" className="form-control"
+                                            placeholder="Rose Merie"
+                                            required
+                                            {...register('name')}
+                                        />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label
+                                            className="form-label"
+                                        >Email address</label>
+                                        <input type="email"
+                                            placeholder="asd@gmail.com"
+                                            className="form-control"
+                                            required
+                                            {...register('email')}
+                                        />
+                                    </div>
+                                    <div className="d-flex gap-5 mb-3">
+
+                                        <div className="">
+                                            <label
+                                                className="form-label"
+                                            >Select Picture</label>
+                                            <input
+                                                type="file"
+                                                {...register('image')}
+                                                className="form-control mb-2 mr-sm-2" />
                                         </div>
-                                    </SwiperSlide>
-                                })}
-
-                            </Swiper>
-                        </div>
-                    )}
-                </div>
-
-                <div className='col-lg-6 col-md-6 col-sm-12 px-lg-5 px-4  pt-5' style={{ position: "relative" }}>
-                    {sucess && (
-                        <div className={`succes_box px-3${sucess === "comment" ? "showVerify" : ""}`}>
-                            <div className="text-end">
-                                <button className="btn fw-bolder fs-3"
-                                    style={{ position: "absolute", top: "0px", right: "10px", color: "red" }}
-                                    onClick={() => setSucess(false)}> <RxCross1 /></button>
+                                        <p className="">or</p>
+                                        <div className="">
+                                            <label
+                                                className="form-label"
+                                            >Select Video</label>
+                                            <input
+                                                type="file"
+                                                accept="video/*"
+                                                {...register('video')}
+                                                className="form-control mb-2 mr-sm-2" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label
+                                            className="form-label"
+                                        >Write your feedback</label>
+                                        <textarea type="text"
+                                            rows="5"
+                                            className="form-control"
+                                            required
+                                            {...register('comment')}
+                                        />
+                                    </div>
+                                    <button type="submit" className="button-submit w-100">
+                                        Submit
+                                    </button>
+                                </form>
                             </div>
-                            <img src="/verified.gif" alt="No Network" style={{ width: "70px" }} />
-                            <p className="fw-bolder text-center" style={{ color: "rgb(2, 2, 94)" }}>Feedback Submitted</p>
-                        </div>
+                        </>
                     )}
-                    <h1 className='text-center fw-bolder mt-lg-2 mt-sm-5 mb-5' style={{ color: 'rgb(2, 2, 94)' }} >
-                        Leave Your Feedback</h1>
-                    <form action="" onSubmit={handleSubmit(Comment)}>
-                        <div className="input-group mb-3">
-                            <input required="true"
-                                autocomplete="off"
-                                type="text"
-                                className="input w-100"
-                                {...register('name', { required: true })}
-                            />
-                            <label class="user-label">Name *</label>
-                            {errors.name ? <div className='error'>Name is required </div> : null}
+
+                    <div className="col-lg-12 col-md-12 col-sm-12 my-5">
+                        <h1 className="fs-1 fw-bolder my-5">
+                            Riski-Brothers Society
+                        </h1>
+                        {/* <p className=fs-6'>Over 10,000 happy customers!</p> */}
+
+                        <div className='h_box_main'>
+                            {loading ? (
+                                <div
+                                    className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
+                                    style={{ height: "80vh" }}
+                                >
+                                    <Loader />
+                                </div>
+                            ) : comments?.length === 0 ? (
+                                <div
+                                    className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
+                                    style={{ height: "50vh" }}
+                                >
+                                    <h2>No Review available</h2>
+                                </div>
+                            ) : (comments?.map((item, index) => {
+                                    return <>
+                                        <div className='card border p-2' style={{ width: "270px" }} key={index}>
+                                            <div className="card_img mb-2" style={{ background: "transparent" }}>
+                                                {item?.mediaUrl === undefined && (
+                                                    <img src="/feedback.png" alt={item.title} style={{ maxWidth: '100%', height: '95%' }} />
+                                                )
+                                                }
+                                                {item?.mediaUrl && (
+                                                    <div>
+                                                        {item?.mediaUrl.endsWith('.jpg') || item?.mediaUrl.endsWith('.png') ? (
+                                                            <img src={item?.mediaUrl} alt={item.title} style={{ maxWidth: '100%', height: '95%' }} />
+                                                        ) : (
+                                                            <video controls autoPlay style={{ maxWidth: '100%', maxHeight: '95%' }}>
+                                                                <source src={item?.mediaUrl} type="video/mp4" />
+                                                                Your browser does not support the video tag.
+                                                            </video>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <p className='text-center'>{item?.comment}</p>
+                                            <p className='text-center fw-bolder'>{item?.name}</p>
+                                        </div>
+                                    </>
+                                })
+                            )}
                         </div>
-                        <div className="input-group mb-3">
-                            <input required="true"
-                                autocomplete="off"
-                                type="email"
-                                className="input w-100"
-                                {...register('email', { required: true })}
-                            />
-                            <label class="user-label">Email *</label>
-                            {errors.email ? <div className='error'>E-mail is required </div> : null}
-                        </div>
-                        {cu.email === "asd@gmail.com" &&
-                            < div className="input-group mb-3">
-                                <input
-                                    autocomplete="off"
-                                    type="date"
-                                    className="input w-100"
-                                    {...register('date1')}
-                                />
-                            </div>
-                        }
-                        <div className="input-group mb-3">
-                            <textarea required="true"
-                                type="text"
-                                autocomplete="off"
-                                className="input w-100"
-                                rows={7}
-                                {...register('comment', { required: true })}
-                            />
-                            <label class="user-label">Write a Review *</label>
-                            {errors.comment ? <div className='error'>Cannot submit empty comment</div> : null}
-                        </div>
-                        <button type="submit" className="btn mt-2 review_btn w-100" >
-                            Submit
-                        </button>
-                    </form>
+                    </div>
 
                 </div>
-            </div >
-
-        </div >
+            </div>
+        </div>
     </>
 }
 

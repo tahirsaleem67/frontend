@@ -28,9 +28,9 @@ const Collections = () => {
     return <>
         <div className="container mt-5">
             <div className="row">
-                <div className="col-12"><h1 className='home_heading text-center mb-5 text-capitalize'>Our Collections</h1></div>
+                <div className="col-12"><h1 className='home_heading text-center mb-5 text-capitalize fs-3'>Premium 1st</h1></div>
             </div>
-            <div className='row row-cols-lg-4 row-cols-md-3 row-cols-2 align-center'>
+            <div className='d-flex flex-wrap gap-5 align-center justify-content-center'>
                 {isLoading ? (
                     <Loader />
                 ) : (
@@ -38,17 +38,13 @@ const Collections = () => {
                         return (
                             <Link
                                 to={`/Product/byCategory/${data.category}`}
-                                className="cols px-3 my-3"
+                                className="cursor px-3 my-3 "
                                 key={index}
                             >
-                                <div className="collection_card">
-                                    <div className="image_wrapper">
+                                    <div className="image_wrapper collection_card border">
                                         <img src={data.image} alt="" className="collection_image" />
-                                        <div className="overlay">
-                                            <p className="collection_title">{data.category}</p>
-                                        </div>
                                     </div>
-                                </div>
+                                            <p className="mt-2 text-center fw-bolder fs-3">{data.category}</p>
                             </Link>
                         );
                     })

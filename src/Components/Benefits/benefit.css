@@ -13,10 +13,10 @@
     align-items: center !important;
     gap: 10px;
 }
-.benefit_box:hover{
+/* .benefit_box:hover{
     cursor: pointer;
     transform: scale(1.07);
-}
+} */
 
 .Benefit_cards {
     padding: 0px 80px;
@@ -34,7 +34,7 @@
     color: black;
 }
 .benefit_main_box_swiper{
-    display: none !important;
+    display: none;
 }
 @media screen and (max-width:768px) {
     .benefit_main_box{

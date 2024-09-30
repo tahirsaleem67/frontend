@@ -15,13 +15,13 @@ const Footer = () => {
     return <>
         <>
             {/* Footer */}
-            <footer className="text-center text-lg-start" style={{ backgroundColor: "#F0EEED" }} >
+            <footer className="text-center text-lg-start" style={{ backgroundColor: "black" }} >
                 {/* Section: Social media */}
                 <section className="container d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
                     <div className="me-5 d-none d-lg-block fw-bold">
-                        <span>Get connected with us on social networks:</span>
+                        <span className='text-light'>Get connected with us on social networks:</span>
                     </div>
-                    <div className='fs-4'>
+                    <div className='fs-4 text-light'>
                         <a href="https://www.facebook.com/share/55R2hTjgvaqV8Wky/?mibextid=qi2Omg" target='blank' className="me-4 text-reset">
                             <FaFacebook />
                         </a>
@@ -47,7 +47,7 @@ const Footer = () => {
                             <div className="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
                                 {/* Content */}
                                 <img src="logo.png" alt="" />
-                                <p className='mt-3'>
+                                <p className='mt-3 text-light'>
                                     We have clothes that suits your style and which you’re proud to wear.
                                     From women to men.
                                 </p>
@@ -55,8 +55,7 @@ const Footer = () => {
                             <div className="col-md-5 col-lg-5 col-xl-5 col-sm-12 mx-auto mb-">
                                 <div className='row d-flex justify-content-center'>
                                     <div className='col-6'>
-
-                                        <div>
+                                        <div className='text-light'>
                                             <h6 className="text-uppercase fw-bolder mb-4">Information</h6>
                                             <p>
                                                 <a href="#!" className="text-reset">
@@ -81,7 +80,7 @@ const Footer = () => {
                                         </div>
                                     </div>
                                     <div className='col-6'>
-                                        <div>
+                                        <div className='text-light'>
                                             <h6 className="text-uppercase fw-bolder mb-4">Useful links</h6>
                                             <p>
                                                 <NavLink to="products" className="text-reset">
@@ -108,18 +107,18 @@ const Footer = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-                                <h6 className="text-uppercase fw-bolder mb-4">Contact</h6>
-                                <p>
+                            <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4 text-light">
+                                <h6 className="text-uppercase fw-bolder mb-4 text-light">Contact</h6>
+                                <p className='text-light'>
                                     <i className="fas fa-home " /> Back side CUST University sihala Islamabad
                                 </p>
                                 <a href="mailto:riskibrothers00@gmail.com" target='_blank'>
-                                    <p>
+                                    <p className='text-light'>
                                         <i className="fas fa-envelope" /> riskibrothers00@gmail.com
                                     </p>
                                 </a>
                                 <a href="tel:+923259053922">
-                                    <p>
+                                    <p className='text-light'>
                                         <i className="fas fa-phone" /> +923259053922
                                     </p>
                                 </a>
@@ -132,12 +131,10 @@ const Footer = () => {
                 {/* Section: Links  */}
                 {/* Copyright */}
                 <div
-                    className="text-center p-4"
-                    style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
-                >
-                    © 2024 Copyright:
-                    <a className="text-reset fw-bold" href="https://mdbootstrap.com/">
-                        Excellence Institute
+                    className="text-center p-4 text-light">
+                    © 2024 Copyright: 
+                    <a className="fw-bold text-light mx-1" href="/">
+                         Riski-Brothers
                     </a>
                 </div>
                 {/* Copyright */}

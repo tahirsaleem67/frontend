@@ -15,6 +15,7 @@ import {
   FaFacebook, FaEye, FaEyeSlash, FaRegUser, FaPhoneAlt, FaAddressBook
 } from "react-icons/fa";
 
+import { RxCross2 } from "react-icons/rx";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io"
 import TagManager from 'react-gtm-module'
 import { RxCross1 } from "react-icons/rx"
@@ -68,6 +69,9 @@ const SingleAdd = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [sucess, setSucess] = useState("")
   const [timeoutId, setTimeoutId] = useState(null);
+  const [form, setForm] = useState(false)
+  const [cmntLoading, setcmntLoading] = useState(false)
+
   const dispatch = useDispatch();
 
 
@@ -137,6 +141,7 @@ const SingleAdd = () => {
       (prevSelectedImage) => (prevSelectedImage + 1) % totalImages
     );
   };
+
   const copyUrlToClipboard = async (url) => {
     try {
       await navigator.clipboard.writeText(url);
@@ -168,8 +173,6 @@ const SingleAdd = () => {
         break;
     }
   };
-
-
 
 
   const handleScroll = (direction) => {
@@ -238,7 +241,7 @@ const SingleAdd = () => {
   ) {
     if (cu._id === undefined) {
       move(`/login/${product.title}/${productId}`);
-      // toast.success("Login to Place Your Order");
+      toast.success("Login to Place Your Order");
     } else if (cu.role === "admin") {
       dispatch({
         type: "LOGOUT_USER",
@@ -267,7 +270,8 @@ const SingleAdd = () => {
             payload: response.data.alldata,
 
           });
-          setSucess("cart")
+        toast.success("Added to cart")
+          // setSucess("cart")
         }
       } catch (error) {
         // toast.warning("Server Error Try Again Later...")
@@ -307,27 +311,46 @@ const SingleAdd = () => {
 
   }
 
-
+  const openForm = () => {
+    setForm(!form)
+  }
 
   const Comment = async (cmnt) => {
+    setLoading(true);
 
-    setLoading(true)
+    let mediaUrl = "";
 
-    let cloudinaryUrl = "";
-
+    // If an image is selected, upload it to Cloudinary
     if (cmnt.image && cmnt.image[0]) {
       const formData = new FormData();
       formData.append('file', cmnt.image[0]);
       formData.append('upload_preset', 'zonfnjjo');
       try {
         const response = await axios.post("https://api.cloudinary.com/v1_1/dlw9hxjr4/image/upload", formData);
-        cloudinaryUrl = response.data.url;
+        mediaUrl = response.data.url;
+        // console.log("Image is uploaded")
       } catch (error) {
+        // console.error("Image upload failed", error);
+      }
+    }
+
+    // If a video is selected, upload it to Cloudinary
+    if (cmnt.video && cmnt.video[0]) {
+      const formData = new FormData();
+      formData.append('file', cmnt.video[0]);
+      formData.append('upload_preset', 'zonfnjjo');
+      try {
+        const response = await axios.post("https://api.cloudinary.com/v1_1/dlw9hxjr4/video/upload", formData);
+        mediaUrl = response.data.url;
+        // console.log("Image is uploaded")
+
+      } catch (error) {
+        // console.error("Video upload failed", error);
       }
     }
 
     try {
-      cmnt.image = cloudinaryUrl;
+      cmnt.mediaUrl = mediaUrl;
       const commentWithProductId = { ...cmnt, productId };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, commentWithProductId);
       if (response.data.message === "Comment Added") {
@@ -335,16 +358,18 @@ const SingleAdd = () => {
           type: "ADD_COMMENT",
           payload: response.data.alldata,
         });
-        setComments(response.data.alldata)
-        setLoading(false)
+        setComments(response.data.alldata);
+        setLoading(false);
         reset();
-        setSucess("comment")
-
-        // toast.success("Feedback submitted");
+        setForm(false);
+        // setSucess("comment");
+        toast.success("Feedback submitted");
       }
     } catch (e) {
+      // console.error("Comment submission failed", e);
     }
   };
+
 
   useEffect(() => {
     setLoading(true);
@@ -384,20 +409,14 @@ const SingleAdd = () => {
     ) : product && product.images ? (
       <div className="container-fluid min-vh-100">
         <div className="row">
-          <div className="col-lg-12 col-sm-12 mt-4 mb-2 s_categories_P d-flex align-items-center">
-            {product?.subCategory != "three-&-two-seater-sofas" &&
-              <p style={{ textTransform: "capitalize", fontFamily: "Times New Roman", fontSize: "15px" }}>
+          <div className="col-lg-12 col-sm-12 my-5 s_categories_P d-flex align-items-center">
+            {product?.category &&
+              <p className="m-0 text-capitalize">
                 home <FaAngleRight />
-                product <FaAngleRight /> {
-                  product?.category
-                } <FaAngleRight /> {product?.subCategory}
-              </p>}
-            {product?.subCategory === "three-&-two-seater-sofas" &&
-              <p style={{ fontFamily: "Times New Roman", fontSize: "15px" }}>
-                Home <FaAngleRight />
-                Product <FaAngleRight /> <span style={{ textTransform: "capitalize" }}>{product?.category}</span>
-                <FaAngleRight /> 3 and 2 Seater Sofas
-              </p>}
+                product <FaAngleRight /> {product?.category}
+              </p>
+              }
+
           </div>
 
           <div className="col-lg-1 col-md-2 col-sm-12 order-lg-1 order-md-1 order-2 p-0 m-0 d-flex flex-column align-items-center" style={{ position: "relative" }}>
@@ -495,27 +514,16 @@ const SingleAdd = () => {
           </div>
 
           <div className="col-lg-5 col-sm-12 order-3" style={{ position: "relative", height: "fit-content" }}>
-            {sucess === "cart" && (
-              <div className={`succes_box  px-3 ${sucess === "cart" ? "showVerify" : ""}`}>
-                <div className="text-end">
-                  <button className="btn fw-bolder fs-3"
-                    style={{ position: "absolute", top: "0px", right: "10px", color: "red", width: "fit-content" }}
-                    onClick={() => setSucess("")}> <RxCross1 /></button>
-                </div>
-                <img src="/verified.gif" alt="No Network" style={{ width: "70px" }} />
-                <p className="fw-bolder text-center">Added to Cart</p>
-              </div>
-            )}
             <div className={`s_content ${product?.category === "bed" ? "bed_class" : ""}`}>
               <h1
-                className="text-center fs-1 "
+                className="fs-1 "
                 style={{ color: "#1b2950" }}
               >
                 {product?.title}
               </h1>
               {comments.filter((item) => item.productId === productId)
                 .length > 0 && (
-                  <div className="text-center my-2 cursor" style={{ color: "#1b2950" }}>
+                  <div className=" my-2 cursor" style={{ color: "#1b2950" }}>
                     <Link to="review">
                       ({comments.filter(
                         (item) => item.productId === productId
@@ -525,17 +533,15 @@ const SingleAdd = () => {
                     </Link>
                   </div>
                 )}
-              {/* <p className="fs-6 fw-bolder " style={{ color: "#1b2950" }}>
-                    Product code: {product?.sn}
-                  </p> */}
+
               <div className="">
                 <span
                   className="fw-bold fs-5"
                   style={{ color: "red" }}
-                >{`£${totalPrice?.toFixed()}`}.00</span>
+                >{`£${totalPrice?.toFixed()}`}</span>
                 {product.discount > 0 &&
                   <span className="fs-6 text-muted">
-                    <s className="mx-2">{`£${product?.price.toFixed()}`}.00</s>
+                    <s className="mx-2">{`£${product?.price.toFixed()}`}</s>
                   </span>}
               </div>
               <div className="sigle_quatity_main mt-3">
@@ -564,7 +570,15 @@ const SingleAdd = () => {
                 </div>
               </div>
             </div>
-
+            <div className="d-flex mt-3">
+              <p className="fs-6 fw-bolder">🌟 3-4 Days - </p><p className="text-muted"> Fast-Delivery</p>
+            </div>
+            <div className="d-flex">
+              <p className="fs-6 fw-bolder ">🌟 7 Days - </p><p className="text-muted"> Warrenty Replacements</p>
+            </div>
+            <div className="d-flex">
+              <p className="fs-6 fw-bolder ">🌟 24/7 - </p><p className="text-muted"> Customer Support</p>
+            </div>
             <div className="mt-3 d-flex flex-wrap gap-3">
               <p className="m-0 d-flex align-items-center cursor" style={{
                 fontSize: "17px",
@@ -700,15 +714,7 @@ const SingleAdd = () => {
 
         <div className="row mt-5 mb-3 d-flex justify-content-center">
           <div className="col-lg-10 col-md-10 col-sm-12 mb-5">
-            <p
-              className="fs-2 fw-bolder"
-              style={{
-                color: "#1b2950",
-                borderBottom: "1px solid #1b2950",
-                width: "fit-content"
-              }}
-            >
-              Related Products
+            <p className="fs-3 fw-bolder">Related Products
             </p>
             {loading ? (
               <div
@@ -718,8 +724,9 @@ const SingleAdd = () => {
                 <Loader />
               </div>
             ) : (
-              <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 g-4">
-                {data?.map((item, index) => (
+              <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 g-4 my-5">
+                {data?.filter((item)=>item.category===product.category)
+                .map((item, index) => (
                   <div className="col card" key={index}>
                     <a href={`/product/${item.title.replace(/ /g, '-')}/${item._id}`}>
                       <div className="card_img">
@@ -743,22 +750,108 @@ const SingleAdd = () => {
           </div>
         </div>
 
-        <div className="row mb-5 py-5" id="review" style={{backgroundColor:"#F2F0F1"}}>
-          <div
-            className="col-lg-6 col-md-6 col-sm-12"
-          >
-            <h1 className="text-center fs-1 fw-bolder">
-              OUR HAPPY CUSTOMERS
-            </h1>
-            <div className='h_box_main'>
-                    {loading ? (
-                        <div
-                            className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
-                            style={{ height: "80vh" }}
-                        >
-                            <Loader />
+        <div className="row mb-5 py-5" id="review">
+          <div className="col-lg-12 col-md-12 col-sm-12 px-lg-5 px-3" >
+            <div className="row d-flex justify-content-center">
+              {!form && (
+                <div className="col-12 p-2" style={{ backgroundColor: "#F2F0F1" }}>
+                  <div className="border p-5 d-flex flex-column justify-content-center align-items-center">
+                    <p className="fw-bolder fs-3">Customer Reviews</p>
+                    <p className="text-center fs-5">No review yet. Any feedback? Let us know </p>
+                    <div className="">
+                      <button className="button-submit px-3" onClick={openForm}>Write a review</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {form && (
+                <>
+                  <div className="col-lg-6 col-md-6 col-sm-12 p-3 border">
+                    <div className="d-flex justify-content-between">
+                      <h1 className="fs-2 fw-bolder">Reviews</h1>
+                      <p className="m-0 p-0 fs-3" onClick={() => setForm(false)}><RxCross2 /></p>
+                    </div>
+                    <form action="" onSubmit={handleSubmit(Comment)}>
+                      <div class="mb-3">
+                        <label
+                          className="form-label"
+                        >Your Name</label>
+                        <input type="text" className="form-control"
+                          placeholder="Rose Merie"
+                          required
+                          {...register('name')}
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label
+                          className="form-label"
+                        >Email address</label>
+                        <input type="email"
+                          placeholder="asd@gmail.com"
+                          className="form-control"
+                          required
+                          {...register('email')}
+                        />
+                      </div>
+                      <div className="d-flex gap-5 mb-3">
+
+                        <div className="">
+                          <label
+                            className="form-label"
+                          >Select Picture</label>
+                          <input
+                            type="file"
+                            {...register('image')}
+                            className="form-control mb-2 mr-sm-2" />
                         </div>
-                    ) : comments.filter((item) => item.productId === productId)
+                        <p className="">or</p>
+                        <div className="">
+                          <label
+                            className="form-label"
+                          >Select Video</label>
+                          <input
+                            type="file"
+                            accept="video/*"
+                            {...register('video')}
+                            className="form-control mb-2 mr-sm-2" />
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label
+                          className="form-label"
+                        >Write your feedback</label>
+                        <textarea type="text"
+                          rows="5"
+                          className="form-control"
+                          required
+                          {...register('comment')}
+                        />
+                      </div>
+                      <button type="submit" className="button-submit w-100">
+                        Submit
+                      </button>
+                    </form>
+                  </div>
+                </>
+              )}
+
+              <div className="col-lg-12 col-md-12 col-sm-12 my-5">
+                <h1 className="fs-1 fw-bolder my-5">
+                  Riski-Brothers Society
+                </h1>
+                {/* <p className=fs-6'>Over 10,000 happy customers!</p> */}
+
+                <div className='h_box_main'>
+                  {loading ? (
+                    <div
+                      className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
+                      style={{ height: "80vh" }}
+                    >
+                      <Loader />
+                    </div>
+                  ) : comments.filter((item) => item.productId === productId)
                     .length === 0 ? (
                     <div
                       className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
@@ -766,96 +859,39 @@ const SingleAdd = () => {
                     >
                       <h2>No Review available</h2>
                     </div>
-                  ) :  (comments
-                     .filter((item) => item.productId === productId)
+                  ) : (comments
+                    .filter((item) => item.productId === productId)
                     .map((item, index) => {
-                        return <>
-                            <div className='card border p-2' style={{ width: "270px"}} key={index}>
-                                <div className="card_img mb-2">
-                                    <img src={item?.image} className="text-center" alt={item?.title} />
-                                </div>
-                                <p className='text-center'>{item?.comment}</p>
-                                <p className='text-center fw-bolder'>{item?.name}</p>
-                            </div>
-                        </>
+                      return <>
+                        <div className='card border p-2' style={{ width: "270px" }} key={index}>
+                          <div className="card_img mb-2" style={{ background: "transparent" }}>
+                            {item?.mediaUrl ===undefined &&(
+                                  <img src="/feedback.png" alt={item.title} style={{ maxWidth: '100%', height: '95%' }} />
+                            )
+                            }
+                            {item?.mediaUrl && (
+                              <div>
+                                {item?.mediaUrl.endsWith('.jpg') || item?.mediaUrl.endsWith('.png') ? (
+                                  <img src={item?.mediaUrl} alt={item.title} style={{ maxWidth: '100%', height: '95%' }} />
+                                ) : (
+                                 <video controls autoPlay style={{ maxWidth: '100%', maxHeight: '95%' }}>
+                                    <source src={item?.mediaUrl} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          <p className='text-center'>{item?.comment}</p>
+                          <p className='text-center fw-bolder'>{item?.name}</p>
+                        </div>
+                      </>
                     })
-                    )}
+                  )}
                 </div>
-          </div>
-
-          <div className="col-lg-6 col-md-6 col-sm-12 px-lg-5 px-3 order-1 order-lg-2 order-md-2 order-xl-2" style={{ position: "relative" }}>
-            {sucess === "comment" && (
-              <div className={`succes_box  px-3 ${sucess === "comment" ? "showVerify" : ""}`}>
-                <div className="text-end">
-                  <button className="btn fw-bolder fs-3 p-3"
-                    style={{ position: "absolute", top: "0px", right: "10px", color: "red" ,width:"fit-content" }}
-                    onClick={() => setSucess("")}> <RxCross1 /></button>
-                </div>
-                <img src="/verified.gif" alt="No Network" style={{ width: "70px" }} />
-                <p className="fw-bolder text-center">Feedback Submitted</p>
-              </div>
-            )}
-            <h1
-              className="fs-2 text-center fw-bolder"
-              style={{ color: "rgb(2, 2, 94)" }}
-            >
-              Product Feedback
-            </h1>
-            <form action="" onSubmit={handleSubmit(Comment)}>
-              <div class="mb-3">
-                <label
-                  className="form-label"
-                >Your Name</label>
-                <input type="text" className="form-control"
-                  placeholder="Rose Merie"
-                  required
-                  {...register('name')}
-                />
               </div>
 
-              <div class="mb-3">
-                <label
-                  className="form-label"
-                >Email address</label>
-                <input type="email"
-                  placeholder="asd@gmail.com"
-                  className="form-control"
-                  required
-                  {...register('email')}
-                />
-              </div>
-
-              <div class="mb-3">
-                <label
-                  className="form-label"
-                >Select Picture</label>
-                <input type="file"
-                  {...register('image',
-                    {
-                      required: true,
-                      minLength: 1,
-                    })}
-                  className="form-control mb-2 mr-sm-2" />
-                {errors.image && errors.image.type == "required" ? <div className='error'>Image is required</div> : null}
-                {errors.image && errors.image.type === 'minLength' && <div className='error'>At least one image is required</div>}
-              </div>
-
-
-              <div class="mb-3">
-                <label
-                  className="form-label"
-                >Write your feedback</label>
-                <textarea type="text"
-                  rows="7"
-                  className="form-control"
-                  required
-                  {...register('comment')}
-                />
-              </div>
-              <button type="submit" className="button-submit w-100">
-                Submit
-              </button>
-            </form>
+            </div>
           </div>
         </div>
 
@@ -864,6 +900,7 @@ const SingleAdd = () => {
             <Benefits />
           </div>
         </div>
+
       </div >
     ) : (
       <div className='col-lg-12 col-sm-12 d-flex align-items-center justify-content-center' style={{ height: "80vh" }} >

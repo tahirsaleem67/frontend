@@ -108,7 +108,6 @@ const UserPanel = () => {
             navigate('/login'); // Navigate to the login page if not logged in
             return;
         }
-
         const data = new FormData();
         data.append("file", video);
         data.append("upload_preset", "adeelrana");
@@ -117,7 +116,6 @@ const UserPanel = () => {
         try {
             const res = await axios.post("https://api.cloudinary.com/v1_1/dr3ie9gpz/video/upload", data);
             const videoUrl = res.data.url;
-
             const decoded = jwtDecode(token);
             const userId = decoded?.tokenId;
 
@@ -147,20 +145,6 @@ const UserPanel = () => {
             document.getElementById("uploadVideo").click(); // Trigger file input click
         }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     useEffect(() => {
         try {

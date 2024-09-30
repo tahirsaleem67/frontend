@@ -1,17 +1,36 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Autoplay } from 'swiper/modules';
 import "./hero.css"
+
 const Hero = () => {
-    return <>
-    <>
-  
+  return <>
+    <div className='container-fluid'>
+      <div className='row p-0'>
+        <div className='col p-0'>
+          <div className='d-flex flex-wrap justify-content-center align-items-center '>
+            <Swiper
+              className="mySwiper hero_swiper"
+              slidesPerView={1}
+              modules={[Autoplay]}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false
+              }}
+            >
 
-</>
+              <SwiperSlide className='hero_slide'><img src="/hero.jpeg" className='img-fluid' alt="" /></SwiperSlide>
+              <SwiperSlide className='hero_slide'><img src="/hero1.jpeg" className='img-fluid' alt="" /></SwiperSlide>
+              <SwiperSlide className='hero_slide'><img src="/hero2.jpeg" className='img-fluid' alt="" /></SwiperSlide>
+            </Swiper>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <div className='container-fluid ' style={{ backgroundColor: "#F2F0F1" }}>
+    {/* <div className='container-fluid ' style={{ backgroundColor: "#F2F0F1" }}>
             <div className='row '>
                 <div className='col-lg-6 col-md-6 col-sm-12 px-lg-5 px-md-5 px-sm-3 pt-5 hero_container'>
                     <h1 className='home_heading'>FIND CLOTHES <br />THAT MATCHES <br /> YOUR STYLE</h1>
@@ -45,8 +64,8 @@ const Hero = () => {
                     </div>
                 </div>
             </div>
-        </div>
-    </>
+        </div> */}
+  </>
 }
 
 export default Hero
