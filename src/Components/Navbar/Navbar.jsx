@@ -196,22 +196,22 @@ const Navbar = () => {
         <div ref={sideNavRef} className={`side_nav ${open ? 'side_nav_open' : ''}`}>
           <div className="d-flex flex-column gap-3">
             <div>
-              <NavLink className="nav-link" to="/">
+              <NavLink className="nav-link" to="/" onClick={toggleNav}>
                 Home
               </NavLink>
             </div>
             <div>
-              <NavLink className="nav-link" to="/products">
+              <NavLink className="nav-link" to="/products" onClick={toggleNav}>
                 Shop
               </NavLink>
             </div>
             <div>
-              <NavLink className="nav-link" to="/review">
+              <NavLink className="nav-link" to="/review" onClick={toggleNav}>
                 Reviews
               </NavLink>
             </div>
             <div>
-              <NavLink className="nav-link" to="/contact">
+              <NavLink className="nav-link" to="/contact" onClick={toggleNav}>
                 Contact Us
               </NavLink>
             </div>
