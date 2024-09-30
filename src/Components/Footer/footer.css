@@ -4,6 +4,9 @@
     /* justify-content: space-between; */
     gap: 40px;
 }
+.footerlogo{
+    width: 70px;
+}
 a{
     text-decoration: none !important;
     color: black !important;
@@ -13,4 +16,7 @@ a{
         justify-content: space-between;
         
     }   
+    .footerlogo{
+       justify-content: center;
+    }
 }

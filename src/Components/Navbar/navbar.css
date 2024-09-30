@@ -59,6 +59,9 @@
     justify-content: start;
     align-items: center;
   }
+  .navbar-brand img{
+   justify-content: center;
+  }
 }
 
 /*
