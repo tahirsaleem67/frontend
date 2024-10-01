@@ -12,9 +12,9 @@ const Arrivals = () => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-/* User */
+    /* User */
 
-useEffect(() => {
+    useEffect(() => {
         const fetchProducts = async () => {
             setIsLoading(true);
             setError(null);
@@ -43,7 +43,9 @@ useEffect(() => {
             </div>
             <div className="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-2">
                 {isLoading ? (
-                    <Loader/>
+                    <div className='col-lg-12 col-sm-12 d-flex align-items-center justify-content-center' style={{ height: "50vh" }} >
+                        <Loader />
+                    </div>
                 ) : error ? (
                     <p>Check your internet connection and try again!</p>
                 ) : (

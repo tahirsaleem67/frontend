@@ -1,3 +1,12 @@
+.navbar-brand{
+  width: 105px;
+  height: 74px;
+
+}
+.navbar-brand img{
+  width: 100%;
+  height: 100%;
+}
 .navbar-nav a,
 .navbar-right a {
   color: black !important;
@@ -14,9 +23,6 @@
 
 .navbar_small {
   display: none;
-}
-.navbar-brand img{
-  width: 70px;
 }
 
 .side_nav {
@@ -58,9 +64,6 @@
     display: flex;
     justify-content: start;
     align-items: center;
-  }
-  .navbar-brand img{
-   justify-content: center;
   }
 }
 

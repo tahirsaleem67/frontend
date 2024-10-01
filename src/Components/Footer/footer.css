@@ -4,19 +4,19 @@
     /* justify-content: space-between; */
     gap: 40px;
 }
-.footerlogo{
-    width: 70px;
-}
 a{
     text-decoration: none !important;
     color: black !important;
+}
+
+.footer_logo{
+width: 160px;
+height: 100px;
+
 }
 @media screen and (max-width:768px) {
     .footer_div{
         justify-content: space-between;
         
     }   
-    .footerlogo{
-       justify-content: center;
-    }
 }

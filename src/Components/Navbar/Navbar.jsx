@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CgSearch } from "react-icons/cg";
-import { CgProfile } from "react-icons/cg";
+import { FiUser } from "react-icons/fi";
+import { HiBars3CenterLeft } from "react-icons/hi2";
 import { BsCart } from "react-icons/bs";
 import { NavLink } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux";
@@ -54,20 +55,20 @@ const Navbar = () => {
   return <>
     {/* For large screen */}
     <div className="container-fluid px-5 py-2 navbar_display" style={{ backgroundColor: "#F2F0F1" }}>
-      <div className="row">
-        <div className="col-lg-2 col-sm-2 d-flex no-wrap align-items-center ">
+      <div className="d-flex justify-content-between align-items-center no-wrap">
+        <div className="d-flex no-wrap align-items-center ">
           <a className="navbar-brand" href="/">
-            <img src="/logo.png" alt=""  />
+            <img src="/logo.png" alt="" />
           </a>
         </div>
-        <div className="col-lg-8 col-md-8 d-flex no-wrap align-items-center justify-content-center gap-5 fs-5">
+        <div className="d-flex no-wrap align-items-center justify-content-center gap-5 fs-5">
           <div>
             <NavLink className="nav-link" to="/">
               Home
             </NavLink>
           </div>
           <div>
-            <NavLink className="nav-link" to="/products">
+            <NavLink className="nav-link" to="/Products/all">
               Shop
             </NavLink>
           </div>
@@ -87,10 +88,10 @@ const Navbar = () => {
               </NavLink>
             </div> */}
         </div>
-        <div className="col-lg-2 col-md-2  d-flex justify-content-end align-items-center">
+        <div className="small_nav_btn">
           <div className="navbar_right d-flex no-wrap gap-0 fs-3">
             <NavLink
-              className="nav-"
+              className="nav-link"
               to={`/cart/${cu._id}`}
             ><CgSearch />
             </NavLink>
@@ -113,7 +114,8 @@ const Navbar = () => {
                 <NavLink
                   className="nav-link"
                   to={cu?.role === "admin" ? `/admin-dashboard` : `/user-profile/${cu._id}`}
-                ><CgProfile />
+                >
+                  <FiUser />
                 </NavLink>
               </>
             }
@@ -122,7 +124,7 @@ const Navbar = () => {
                 className="nav-link"
                 to="/login"
               >
-                <CgProfile />
+                <FiUser />
               </NavLink>
             }
           </div>
@@ -134,25 +136,25 @@ const Navbar = () => {
     {/* For small screen */}
 
     <div className="container-fluid p-2 navbar_small" style={{ backgroundColor: "#F2F0F1" }}>
-      <div className="row">
-        <div className="col-2 d-flex justify-content-start align-items-center">
+      <div className="d-flex no-wrap justify-content-between align-items-center">
+        <div className="d-flex justify-content-start align-items-center">
           <button
-            className="navbar-toggler"
-            type="button"
+            className="fs-3 p-0"
+            style={{border:"none", outline:"none"}}
             onClick={toggleNav}
           >
-            {open ? <RxCross2 /> : <FaBars />}
+            {open ? <RxCross2 /> : <HiBars3CenterLeft />}
           </button>
         </div>
-        <div className="col-6 d-flex justify-content-center align-items-center">
+        <div className="d-flex justify-content-center align-items-center">
           <a className="navbar-brand" href="/">
             <img src="/logo.png" alt="" />
           </a>
         </div>
-        <div className="col-4 small_nav_btn ">
+        <div className="small_nav_btn">
           <div className="navbar_right d-flex no-wrap gap-0 fs-3">
             <NavLink
-              className="nav-link d-block d-sm-none"
+              className="nav-link"
               to={`/cart/${cu._id}`}
             ><CgSearch />
             </NavLink>
@@ -175,7 +177,8 @@ const Navbar = () => {
                 <NavLink
                   className="nav-link"
                   to={cu?.role === "admin" ? `/admin-dashboard` : `/user-profile/${cu._id}`}
-                ><CgProfile />
+                >
+                  <FiUser />
                 </NavLink>
               </>
             }
@@ -184,7 +187,7 @@ const Navbar = () => {
                 className="nav-link"
                 to="/login"
               >
-                <CgProfile />
+                <FiUser />
               </NavLink>
             }
           </div>
@@ -219,10 +222,6 @@ const Navbar = () => {
         </div>
       )}
     {/* Small screen end */}
-
-
-
-
 
   </>
 }

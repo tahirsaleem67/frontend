@@ -3,22 +3,14 @@ import {
   FaAngleRight,
   FaMinus,
   FaPlus,
-  FaArrowLeft,
-  FaArrowRight,
-  FaArrowDown,
-  FaArrowUp,
   FaShareAlt,
-  FaShareSquare,
-  FaPinterestP,
   FaInstagram,
-  FaTiktok,
-  FaFacebook, FaEye, FaEyeSlash, FaRegUser, FaPhoneAlt, FaAddressBook
+  FaFacebook,
 } from "react-icons/fa";
 
-import { RxCross2 } from "react-icons/rx";
+import { FaVideoSlash } from "react-icons/fa";
+import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io"
-import TagManager from 'react-gtm-module'
-import { RxCross1 } from "react-icons/rx"
 import { useNavigate, useParams } from "react-router-dom";
 import Benefits from "../Benefits/Benefits";
 import Loader from "../Loader/Loader";
@@ -316,6 +308,17 @@ const SingleAdd = () => {
   }
 
   const Comment = async (cmnt) => {
+    if (!cu?._id) {
+      toast.warning("Login to give feedback");
+      window.location.reload();
+      
+      // After reloading, this code will run to navigate to the login page
+      setTimeout(() => {
+          window.location.href = '/login'; // Redirect to the login page
+      }, 100); // Small delay to ensure page reload happens before redirecting
+
+      return;
+  }
     setLoading(true);
 
     let mediaUrl = "";
@@ -351,6 +354,7 @@ const SingleAdd = () => {
 
     try {
       cmnt.mediaUrl = mediaUrl;
+      cmnt.userId = cu._id;
       const commentWithProductId = { ...cmnt, productId };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, commentWithProductId);
       if (response.data.message === "Comment Added") {
@@ -753,91 +757,8 @@ const SingleAdd = () => {
         <div className="row mb-5 py-5" id="review">
           <div className="col-lg-12 col-md-12 col-sm-12 px-lg-5 px-3" >
             <div className="row d-flex justify-content-center">
-              {!form && (
-                <div className="col-12 p-2" style={{ backgroundColor: "#F2F0F1" }}>
-                  <div className="border p-5 d-flex flex-column justify-content-center align-items-center">
-                    <p className="fw-bolder fs-3">Customer Reviews</p>
-                    <p className="text-center fs-5">No review yet. Any feedback? Let us know </p>
-                    <div className="">
-                      <button className="button-submit px-3" onClick={openForm}>Write a review</button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {form && (
-                <>
-                  <div className="col-lg-6 col-md-6 col-sm-12 p-3 border">
-                    <div className="d-flex justify-content-between">
-                      <h1 className="fs-2 fw-bolder">Reviews</h1>
-                      <p className="m-0 p-0 fs-3" onClick={() => setForm(false)}><RxCross2 /></p>
-                    </div>
-                    <form action="" onSubmit={handleSubmit(Comment)}>
-                      <div class="mb-3">
-                        <label
-                          className="form-label"
-                        >Your Name</label>
-                        <input type="text" className="form-control"
-                          placeholder="Rose Merie"
-                          required
-                          {...register('name')}
-                        />
-                      </div>
-
-                      <div class="mb-3">
-                        <label
-                          className="form-label"
-                        >Email address</label>
-                        <input type="email"
-                          placeholder="asd@gmail.com"
-                          className="form-control"
-                          required
-                          {...register('email')}
-                        />
-                      </div>
-                      <div className="d-flex gap-5 mb-3">
-
-                        <div className="">
-                          <label
-                            className="form-label"
-                          >Select Picture</label>
-                          <input
-                            type="file"
-                            {...register('image')}
-                            className="form-control mb-2 mr-sm-2" />
-                        </div>
-                        <p className="">or</p>
-                        <div className="">
-                          <label
-                            className="form-label"
-                          >Select Video</label>
-                          <input
-                            type="file"
-                            accept="video/*"
-                            {...register('video')}
-                            className="form-control mb-2 mr-sm-2" />
-                        </div>
-                      </div>
-                      <div class="mb-3">
-                        <label
-                          className="form-label"
-                        >Write your feedback</label>
-                        <textarea type="text"
-                          rows="5"
-                          className="form-control"
-                          required
-                          {...register('comment')}
-                        />
-                      </div>
-                      <button type="submit" className="button-submit w-100">
-                        Submit
-                      </button>
-                    </form>
-                  </div>
-                </>
-              )}
-
-              <div className="col-lg-12 col-md-12 col-sm-12 my-5">
+           
+            <div className="col-lg-12 col-md-12 col-sm-12 my-5">
                 <h1 className="fs-1 fw-bolder my-5">
                   Riski-Brothers Society
                 </h1>
@@ -891,6 +812,114 @@ const SingleAdd = () => {
                 </div>
               </div>
 
+
+                <div className="col-12 p-2" style={{ backgroundColor: "#F2F0F1" }}>
+                  <div className="border p-5 d-flex flex-column justify-content-center align-items-center">
+                    <p className="fw-bolder fs-3">Customer Reviews</p>
+                    <p className="text-center fs-5">No review yet. Any feedback? Let us know </p>
+                    <div className="">
+                      <button className="button-submit px-3" 
+                       data-bs-toggle="modal"
+                       data-bs-target="#exampleModal"
+                       >Write a review</button>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="modal fade review_model"
+                        id="exampleModal"
+                        tabIndex={-1}
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="exampleModalLabel">
+                                        Reviews
+                                    </h1>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                    />
+                                </div>
+                                <div className="modal-body p-3">
+                                    <form action="" onSubmit={handleSubmit(Comment)}>
+                                        <div className="mb-3">
+                                            <label className="form-label">Your Name</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Rose Merie"
+                                                required
+                                                {...register('name')}
+                                            />
+                                        </div>
+
+                                        <div className="mb-3">
+                                            <label className="form-label">Email address</label>
+                                            <input
+                                                type="email"
+                                                placeholder="asd@gmail.com"
+                                                className="form-control"
+                                                required
+                                                {...register('email')}
+                                            />
+                                        </div>
+
+                                        <div className="d-flex gap-2 mb-3">
+                                            <div className="file-input-container">
+                                                <label className="file-input-box">
+                                                    <i>
+                                                        <MdOutlinePhotoLibrary />
+                                                    </i>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        {...register('image')}
+                                                        className="file-input"
+                                                    />
+                                                    <p className='text-muted m-0'>Photo</p>
+                                                </label>
+                                            </div>
+                                            <div className="file-input-container">
+                                                <label className="file-input-box">
+                                                    <i>
+                                                        <FaVideoSlash />
+                                                    </i>
+                                                    <input
+                                                        type="file"
+                                                        accept="video/*"
+                                                        {...register('video')}
+                                                        className="file-input"
+                                                    />
+                                                    <p className='text-muted m-0'>Video</p>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-3">
+                                            <label className="form-label">Write your feedback</label>
+                                            <textarea
+                                                type="text"
+                                                rows="5"
+                                                className="form-control"
+                                                required
+                                                {...register('comment')}
+                                            />
+                                        </div>
+                                        <button type="submit" className="button-submit w-100">
+                                            Submit
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              
             </div>
           </div>
         </div>
