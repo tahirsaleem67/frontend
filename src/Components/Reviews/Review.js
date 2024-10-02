@@ -11,7 +11,6 @@ import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux";
 import "./review.css"
 import { useNavigate } from 'react-router-dom';
-
 const Review = () => {
 
 
@@ -23,16 +22,12 @@ const Review = () => {
     } = useForm();
 
     let cu = useSelector((store) => store.userSection.cu);
-    const move = useNavigate();
-
     const [formData, setFormData] = useState(new FormData());
     const allComments = useSelector((store) => store.Comment.comment);
+
     const [comments, setComments] = useState([])
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState(false)
-
-    const [imageSelected, setImageSelected] = useState(false);
-    const [videoSelected, setVideoSelected] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -40,32 +35,8 @@ const Review = () => {
         setForm(!form)
     }
 
-    const handleImageChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setImageSelected(true);
-        }
-    };
-
-    const handleVideoChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setVideoSelected(true);
-        }
-    };
-
     const Comment = async (cmnt) => {
-
-        if (!cu?._id) {
-            toast.warning("Login to give feedback");
-            window.location.reload();
-            
-            // After reloading, this code will run to navigate to the login page
-            setTimeout(() => {
-                window.location.href = '/login'; // Redirect to the login page
-            }, 100); // Small delay to ensure page reload happens before redirecting
-    
-            return;
-        }
-    
+        console.log("comment working");
         setLoading(true);
 
         let mediaUrl = "";
@@ -117,7 +88,7 @@ const Review = () => {
 
         try {
             cmnt.mediaUrl = mediaUrl;
-            cmnt.userId = cu._id;
+            cmnt.userID = cu._id;
             const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, cmnt);
 
             if (response.data.message === "Comment Added") {
@@ -128,6 +99,7 @@ const Review = () => {
                 setComments(response.data.alldata);
                 setLoading(false);
                 setForm(false)
+                window.location.reload();
                 reset();
                 toast.success("Feedback submitted");
             }
@@ -172,15 +144,6 @@ const Review = () => {
     };
 
     return <>
-
-
-        <>
-            {/* Button trigger modal */}
-
-            {/* Modal */}
-
-        </>
-
         <div className='container-fluid my-5' style={{ backgroundColor: "#F2F0F1" }}>
             <div className='container'>
                 <div className="row d-flex justify-content-center">
@@ -250,7 +213,12 @@ const Review = () => {
                             </div>
                         </div>
                     )}
-                  
+                    {loading ? (
+                        <div className='min-vh-50 d-flex justify-content-center align-items-center'>
+                            <Loader />
+
+                        </div>
+                    ) : (
                         <div
                             className="modal fade review_model"
                             id="exampleModal"
@@ -273,89 +241,78 @@ const Review = () => {
                                     </div>
                                     <div className="modal-body p-3">
                                         <form action="" onSubmit={handleSubmit(Comment)}>
-                            <div className="mb-3">
-                                <label className="form-label">Your Name</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Rose Merie"
-                                    defaultValue={cu?.name}
-                                    required
-                                    {...register('name')}
-                                />
-                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label">Your Name</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Rose Merie"
+                                                    defaultValue={cu?.name}
+                                                    required
+                                                    {...register('name')}
+                                                />
+                                            </div>
 
-                            <div className="mb-3">
-                                <label className="form-label">Email address</label>
-                                <input
-                                    type="email"
-                                    placeholder="asd@gmail.com"
-                                    className="form-control"
-                                    defaultValue={cu?.email}
-                                    required
-                                    {...register('email')}
-                                />
-                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label">Email address</label>
+                                                <input
+                                                    type="email"
+                                                    placeholder="asd@gmail.com"
+                                                    className="form-control"
+                                                    defaultValue={cu?.email}
+                                                    required
+                                                    {...register('email')}
+                                                />
+                                            </div>
 
-                            <div className="d-flex gap-2 mb-3">
-                                {/* Image input */}
-                                <div className="file-input-container">
-                                    {!imageSelected ? (
-                                        <label className="file-input-box">
-                                            <i><MdOutlinePhotoLibrary /></i>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                {...register('image')}
-                                                className="file-input"
-                                                onChange={handleImageChange}
-                                            />
-                                            <p className='text-muted m-0'>Photo</p>
-                                        </label>
-                                    ) : (
-                                        <p className="text-success">Image uploaded successfully!</p>
-                                    )}
-                                </div>
+                                            <div className="d-flex gap-2 mb-3">
+                                                {/* Image input */}
+                                                <div className="file-input-container">
+                                                    <label className="file-input-box">
+                                                        <i><MdOutlinePhotoLibrary /></i>
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            {...register('image')}
+                                                            className="file-input"
+                                                        />
+                                                        <p className="text-muted m-0">Photo</p>
+                                                    </label>
+                                                </div>
 
-                                {/* Video input */}
-                                <div className="file-input-container">
-                                    {!videoSelected ? (
-                                        <label className="file-input-box">
-                                            <i><FaVideoSlash /></i>
-                                            <input
-                                                type="file"
-                                                accept="video/*"
-                                                {...register('video')}
-                                                className="file-input"
-                                                onChange={handleVideoChange}
-                                            />
-                                            <p className='text-muted m-0'>Video</p>
-                                        </label>
-                                    ) : (
-                                        <p className="text-success">Video uploaded successfully!</p>
-                                    )}
-                                </div>
-                            </div>
+                                                {/* Video input */}
+                                                <div className="file-input-container">
+                                                    <label className="file-input-box">
+                                                        <i><FaVideoSlash /></i>
+                                                        <input
+                                                            type="file"
+                                                            accept="video/*"
+                                                            {...register('video')}
+                                                            className="file-input"
+                                                        />
+                                                        <p className="text-muted m-0">Video</p>
+                                                    </label>
+                                                </div>
+                                            </div>
 
-                            <div className="mb-3">
-                                <label className="form-label">Write your feedback</label>
-                                <textarea
-                                    type="text"
-                                    rows="5"
-                                    className="form-control"
-                                    required
-                                    {...register('comment')}
-                                />
-                            </div>
-                            <button type="submit" className="button-submit w-100">
-                                Submit
-                            </button>
-                        </form>
-
+                                            <div className="mb-3">
+                                                <label className="form-label">Write your feedback</label>
+                                                <textarea
+                                                    rows="5"
+                                                    className="form-control"
+                                                    required
+                                                    {...register('comment')}
+                                                />
+                                            </div>
+                                            <button type="submit" className="button-submit w-100">
+                                                Submit
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    )}
 
                 </div>
             </div>

@@ -26,125 +26,27 @@ const UserPanel = () => {
     const [order, setOrder] = useState([]);
     const [component, setComponent] = useState("orders");
     const dispatch = useDispatch();
-
+    const [comments, setComments] = useState([])
+    const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [videoUrl, setVideoUrl] = useState("");
-    const [arrivedVideo, setArrivedVideo] = useState([])
-    const [isUploaded, setIsUploaded] = useState(false);
-    const [passing, setPassing] = useState(false)
-    /* User */
 
     useEffect(() => {
-        const fetchVideoUrl = async () => {
-            const token = localStorage.getItem("userToken");
-            if (!token) return;
-            const decoded = jwtDecode(token);
-            const userId = decoded?.tokenId;
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/getVideo/${userId}`);
-                console.log(response.data, "images")
-                setArrivedVideo(response.data);
-            } catch (error) {
-                // console.error('Error fetching video URL:', error);
-            }
-        };
-
-        fetchVideoUrl();
-    }, [passing]);
-
-    /* Video Testimonial */
-    const [videoFile, setVideoFile] = useState(null);
-    const [video, setVideo] = useState(null);
-    const [recordedVideoURL, setRecordedVideoURL] = useState(null);
-    const [isRecording, setIsRecording] = useState(false);
-    const mediaRecorderRef = useRef(null);
-    const videoRef = useRef(null);
-
-    const handleVideoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setVideoFile(URL.createObjectURL(file));
-            setVideo(file);
-        }
-    };
-
-    const startRecording = async () => {
-        const token = localStorage.getItem("userToken");
-        if (!token) {
-            toast.error("You need to be logged in to record a video.");
-            navigate('/login');
-            return;
-        }
-
-        setIsRecording(true);
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        videoRef.current.srcObject = stream;
-        mediaRecorderRef.current = new MediaRecorder(stream);
-        let chunks = [];
-        mediaRecorderRef.current.ondataavailable = (event) => {
-            chunks.push(event.data);
-        };
-        mediaRecorderRef.current.onstop = () => {
-            const blob = new Blob(chunks, { type: 'video/mp4' });
-            setRecordedVideoURL(URL.createObjectURL(blob));
-            setVideo(blob);
-            chunks = [];
-            stream.getTracks().forEach(track => track.stop());
-        };
-
-        mediaRecorderRef.current.start();
-    };
-
-    const stopRecording = () => {
-        mediaRecorderRef.current.stop();
-        setIsRecording(false);
-    };
-
-    const handleUpload = async () => {
-        const token = localStorage.getItem("userToken");
-        if (!token) {
-            toast.error("You need to be logged in to upload a video.");
-            navigate('/login'); // Navigate to the login page if not logged in
-            return;
-        }
-        const data = new FormData();
-        data.append("file", video);
-        data.append("upload_preset", "adeelrana");
-        data.append("cloud_name", "dr3ie9gpz");
-
+        setLoading(true);
         try {
-            const res = await axios.post("https://api.cloudinary.com/v1_1/dr3ie9gpz/video/upload", data);
-            const videoUrl = res.data.url;
-            const decoded = jwtDecode(token);
-            const userId = decoded?.tokenId;
+            axios.get(`${process.env.REACT_APP_BASE_URL}/comments`).then((res) => {
+                if (res) {
 
-            const backendResponse = await axios.post(`${process.env.REACT_APP_BASE_URL}/add-video`, {
-                url: videoUrl,
-                user: userId
+                    dispatch({ type: "ADD_COMMENT", payload: res.data });
+                    setComments(res.data);
+                    setLoading(false);
+                }
             });
-
-            setVideoUrl(backendResponse.data.url);
-            setIsUploaded(true);
-            setComponent('review')
-            setRecordedVideoURL(null);
-            setVideoFile(null);
-            toast.success("Video Uploaded Successfully!");
-            setPassing(!passing)
-        } catch (error) {
-            // console.error('Error uploading video:', error);
+        } catch (e) {
+            console.error(e);
+            setLoading(false);
         }
-    };
+    }, [userid, dispatch]);
 
-    const handleAddVideoClick = () => {
-        const token = localStorage.getItem("userToken");
-        if (!token) {
-            toast.error("You need to be logged in to add a video."); // Show toast message
-            navigate('/login'); // Redirect to login if not logged in
-        } else {
-            document.getElementById("uploadVideo").click(); // Trigger file input click
-        }
-    };
 
     useEffect(() => {
         try {
@@ -208,7 +110,7 @@ const UserPanel = () => {
                         <div className='d-flex justify-content-between mb-4'>
                             <button className={`profile_btn ${component === 'orders' ? 'button-submit px-4' : ''}`} onClick={() => setComponent('orders')}>My Orders</button>
                             <button className={`profile_btn ${component === 'review' ? 'button-submit px-4' : ''}`} onClick={() => setComponent('review')}>My Reviews</button>
-                            <button className={`profile_btn ${component === 'feedback' ? 'button-submit px-4' : ''}`} onClick={() => setComponent('feedback')}>Give Feedback</button>
+                            {/* <button className={`profile_btn ${component === 'feedback' ? 'button-submit px-4' : ''}`} onClick={() => setComponent('feedback')}>Give Feedback</button> */}
                         </div>
                         {component === "orders" &&
                             <>
@@ -269,88 +171,52 @@ const UserPanel = () => {
                             </>
                         }
 
-                        {component === "feedback" &&
+                        {component === "review" &&
                             <>
-                                <div className="text-center my-3">
-                                    <h2>Add or Record Video</h2>
-                                    <input
-                                        type="file"
-                                        accept="video/*"
-                                        style={{ display: 'none' }}
-                                        id="uploadVideo"
-                                        onChange={handleVideoChange}
-                                    />
-                                    <button onClick={handleAddVideoClick} style={buttonStyle}>
-                                        Add Video
-                                    </button>
-                                    <button onClick={isRecording ? stopRecording : startRecording} style={buttonStyle}>
-                                        {isRecording ? 'Stop Recording' : 'Record Video'}
-                                    </button>
-
-                                    {/* Video Preview */}
-                                    {!isUploaded && (
-                                        <>
-                                            {videoFile && (
-                                                <div>
-                                                    <h3>Selected Video</h3>
-                                                    <video src={videoFile} controls width="300" style={{ margin: '10px 0' }}></video>
+                                <div className='row row-cols-lg-3 row-cols-md-3 row-cols-sm-2'>
+                                    {loading ? (
+                                        <div
+                                            className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
+                                            style={{ height: "80vh" }}
+                                        >
+                                            <Loader />
+                                        </div>
+                                    ) : comments?.filter((item) => item.userId === cu._id).length === 0 ? (
+                                        <div
+                                            className="col-lg-12 col-sm-12 d-flex align-items-center justify-content-center"
+                                            style={{ height: "50vh" }}
+                                        >
+                                            <h2>No Review available</h2>
+                                        </div>
+                                    ) : (comments?.filter((data) => data.userId === cu._id).map((item, index) => {
+                                        return <>
+                                            <div className="col card" key={index}>
+                                                <div className="card_img mb-2" style={{ background: "transparent" }}>
+                                                    {item?.mediaUrl === undefined && item?.mediaUrl === "" && (
+                                                        <img src="/feedback.png" alt={item.title} style={{ maxWidth: '100%', height: '95%' }} />
+                                                    )
+                                                    }
+                                                    {item?.mediaUrl && (
+                                                        <>
+                                                            {item?.mediaUrl.endsWith('.jpg') || item?.mediaUrl.endsWith('.png') || item?.mediaUrl.endsWith('.webp') || item?.mediaUrl.endsWith('.gif') ? (
+                                                                <img src={item?.mediaUrl} alt={item.title} style={{ maxWidth: '100%', height: '95%' }} />
+                                                            ) : (
+                                                                <video controls autoPlay style={{ maxWidth: '100%', maxHeight: '95%' }}>
+                                                                    <source src={item?.mediaUrl} type="video/mp4" />
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                            )}
+                                                        </>
+                                                    )}
                                                 </div>
-                                            )}
-
-                                            {recordedVideoURL && (
-                                                <div>
-                                                    <h3>Recorded Video</h3>
-                                                    <video src={recordedVideoURL} controls width="300" style={{ margin: '10px 0' }}></video>
-                                                </div>
-                                            )}
+                                                <p className="text-center">{item?.comment}</p>
+                                                <p className="fw-bolder text-center">{item?.name}</p>
+                                            </div>
                                         </>
+                                    })
                                     )}
-
-                                    {/* Uploaded Video Preview */}
-                                    {isUploaded && (
-                                        <div>
-                                            <h3>Video Uploaded Successfull</h3>
-                                            {/* <video src={videoFile} controls autoPlay width="300" style={{ margin: '10px 0' }}></video> */}
-                                        </div>
-                                    )}
-
-                                    {/* Recording Live Stream */}
-                                    {isRecording && (
-                                        <div>
-                                            <h3>Recording...</h3>
-                                            <video ref={videoRef} autoPlay width="300" style={{ margin: '10px 0' }}></video>
-                                        </div>
-                                    )}
-
-                                    {/* Upload Button */}
-                                    <button onClick={handleUpload} style={buttonStyle}>
-                                        Upload Video
-                                    </button>
                                 </div>
                             </>
-                        }
-
-
-                        {component ==="review" &&
-                        <>
-                        {arrivedVideo?.length ?
-                <>
-                    Here is Uploaded Video <br />
-                    <div className='row row-cols-lg-2 row-cols-md-3 row-cols-2 px-3'>
-                        {arrivedVideo && arrivedVideo.length > 0 ? (
-                            arrivedVideo.map((data, i) => (
-                                <div className='col' style={{height:"270px"}} key={i}>
-                                    <video src={data.url} controls autoPlay style={{ margin: '10px 0', maxWidth:"90%", maxHeight:"90%" }}></video>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No videos available</p>
-                        )}
-                    </div>
-                </>
-                : 'No Video Added By This User'
-            }
-                        </>
                         }
                     </div>
                 </div>
