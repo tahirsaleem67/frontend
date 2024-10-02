@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import "./contact.css";
 import { useForm } from 'react-hook-form';
 import emailjs from 'emailjs-com';
@@ -23,6 +24,7 @@ const Contact = () => {
 
       .then((result) => {
         setConfirm(true);
+        toast.success("Message has been send")
         reset();
       }, (error) => {
         alert('Failed to send email: ', error.text);
@@ -43,35 +45,11 @@ const Contact = () => {
           <div className="container">
             <div className="row justify-content-md-center">
               <div className="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
-                <h2 className="home_heading my-4 display-5 text-center">Contact Us</h2>
-                {confirm === false &&
-                  <p className="text-secondary mb-1 text-center">
-                    The best way to contact us is to use our contact form below. Please
-                    fill out all of the required fields and we will get back to you as
-                    soon as possible.
-                  </p>
-                }
-                <hr className="w-50 mx-auto mb-1 mb-xl-9 border-dark-subtle" />
+                <h2 className="home_heading my-4 display-5 text-center text-capitalize">Contact Us</h2>
               </div>
             </div>
           </div>
 
-          {confirm === true &&
-            <>
-              <div className='d-flex flex-column justify-content-center align-items-center' style={{ minHeight: "50vh" }}>
-              <img src="/verified.gif" alt="No Network" style={{ width: "70px" }} />
-                <p className='fs-3 fw-bold text-center px-4'>
-                  Thank you for contact with us <br /> Our support team should contact with you <br /> within  24 hours.
-                </p>
-                <a href="/products">
-                <button className='button-submit px-4'>
-                  Browse Products
-                </button>
-                </a>
-              </div>
-            </>
-          }
-          {confirm === false &&
             <div className="container">
               <div className="row justify-content-lg-center">
                 <div className="col-12 col-lg-9">
@@ -154,7 +132,6 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-          }
 
         </div>
       </section>

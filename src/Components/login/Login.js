@@ -64,7 +64,7 @@ export const Login = () => {
     <>
       <div className='container my-5'>
         <div className='row login_row d-flex justify-content-center'>
-          <div className='col-lg-6 col-md-6 col-sm-12 border rounded-3 p-lg-5 p-sm-2'>
+          <div className='col-lg-6 col-md-6 col-sm-12 border rounded-3 p-lg-5 p-sm-3'>
             <div>
               <p className='title'>Login</p>
             </div>

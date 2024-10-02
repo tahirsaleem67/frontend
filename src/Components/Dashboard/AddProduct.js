@@ -36,7 +36,19 @@ export const AddProduct = () => {
 
   const { productId } = useParams();
 
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
 
+  const handleSizeChange = (e) => {
+    const value = Array.from(e.target.selectedOptions, (option) => option.value);
+    setSelectedSizes(value);
+  };
+
+  const handleColorChange = (e) => {
+    const value = Array.from(e.target.selectedOptions, (option) => option.value);
+    setSelectedColors(value);
+  };
+  
   const handleDiscountChange = (e) => {
     const newDiscount = parseFloat(e.target.value);
     const newFinalPrice = price - (price * (newDiscount / 100));
@@ -54,7 +66,7 @@ export const AddProduct = () => {
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
-  
+
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: product,
   });
@@ -174,13 +186,14 @@ export const AddProduct = () => {
     }
 
     if (productId) {
-      if (selectedCategory !== "bed" && selectedCategory !== "sofa" && selectedCategory !== "dining-table") {
-        setSelectedCategory('');
-      }
+    
       data.images = cloudinaryUrls;
       data.discount = discount;
       data.price = price;
       data.Fprice = finalPrice;
+      data.sizes = selectedSizes;
+      data.colors = selectedColors;
+
       try {
         const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/product-update`, data);
         setLoading(false);
@@ -196,6 +209,8 @@ export const AddProduct = () => {
       data.discount = discount;
       data.price = price;
       data.Fprice = finalPrice;
+      data.sizes = selectedSizes;
+      data.colors = selectedColors;
       try {
         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/product`, data);
         if (response.data) {
@@ -278,13 +293,46 @@ export const AddProduct = () => {
                     <option value="select category">Select Category</option>
                     {collection.map((item, index) => {
                       return <>
-                        <option style={{color:'black'}} value={item.title} key={index}>{item.category}</option>
+                        <option style={{ color: 'black' }} value={item.title} key={index}>{item.category}</option>
                       </>
                     })
                     }
                   </select>
                   {errors.category ? <div className='error'>Category is required</div> : null}
                 </div>
+                
+                {/* Select Colors */}
+                <div className="col-lg-6 col-md-6 col-sm-12 my-2">
+                  <label style={{ fontSize: '17px', fontWeight: '600' }}>Select Colors</label>
+                  <select multiple className="form-select" onChange={handleColorChange}>
+                    <option value="black">Black</option>
+                    <option value="white">White</option>
+                    <option value="grey">Grey</option>
+                    <option value="mustard">Mustard</option>
+                    <option value="blue">Blue</option>
+                    <option value="royalBlue">Royal Blue</option>
+                    <option value="red">Red</option>
+                    <option value="pink">Pink</option>
+                  </select>
+                </div>
+
+                {/* Size Select */}
+                <div className="col-lg-6 col-md-6 col-sm-12 my-2">
+        <label style={{ fontSize: '17px', fontWeight: '600' }}>Sizes</label>
+        <select
+          multiple
+          className="form-select"
+          onChange={handleSizeChange}
+          value={selectedSizes}
+        >
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+          <option value="xlarge">X-Large</option>
+          <option value="xxlarge">XX-Large</option>
+        </select>
+      </div>
+
 
                 {/* Pricing */}
 
@@ -319,37 +367,10 @@ export const AddProduct = () => {
                 {/* Description */}
 
                 <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Heading 1</label>
-                  <input type="text"{...register('descriptionHead1')} className="border form-control" />
-                </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
                   <label style={{ fontSize: "17px", fontWeight: "600" }}>Description 1</label>
                   <input type="text"{...register('description')} className="border form-control" />
                 </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Heading 2</label>
-                  <input type="text"{...register('descriptionHead2')} className="border form-control" />
-                </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Description 2</label>
-                  <input type="text"{...register('description2')} className="border form-control" />
-                </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Heading 3</label>
-                  <input type="text" {...register('descriptionHead3')} className="border form-control" />
-                </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Description 3</label>
-                  <input type="text"{...register('description3')} className="border form-control" />
-                </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Heading 4</label>
-                  <input type="text"{...register('descriptionHead4')} className="border form-control" />
-                </div>
-                <div className='col-lg-6  col-md-6 col-sm-12  my-2'>
-                  <label style={{ fontSize: "17px", fontWeight: "600" }}>Description 4</label>
-                  <input type="text" {...register('description4')} className="border form-control" />
-                </div>
+
                 {/* Pictures */}
                 <div className='col-lg-6  col-md-6 col-sm-12 my-2'>
                   <label style={{ fontSize: "17px", fontWeight: "600" }}>Product Pics *</label>

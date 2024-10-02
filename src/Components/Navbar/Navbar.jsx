@@ -68,7 +68,7 @@ const Navbar = () => {
             </NavLink>
           </div>
           <div>
-            <NavLink className="nav-link" to="/Products/all">
+            <NavLink className="nav-link" to="/products/all">
               Shop
             </NavLink>
           </div>
@@ -82,11 +82,11 @@ const Navbar = () => {
               Contact Us
             </NavLink>
           </div>
-          {/* <div>
+          <div>
               <NavLink className="nav-link" to="/faqs">
                 Faq's
               </NavLink>
-            </div> */}
+            </div>
         </div>
         <div className="small_nav_btn">
           <div className="navbar_right d-flex no-wrap gap-0 fs-3">
@@ -204,7 +204,7 @@ const Navbar = () => {
               </NavLink>
             </div>
             <div>
-              <NavLink className="nav-link" to="/products" onClick={toggleNav}>
+              <NavLink className="nav-link" to="/products/all" onClick={toggleNav}>
                 Shop
               </NavLink>
             </div>
@@ -216,6 +216,11 @@ const Navbar = () => {
             <div>
               <NavLink className="nav-link" to="/contact" onClick={toggleNav}>
                 Contact Us
+              </NavLink>
+            </div>
+            <div>
+              <NavLink className="nav-link" to="/faqs" onClick={toggleNav}>
+                Faq's
               </NavLink>
             </div>
           </div>

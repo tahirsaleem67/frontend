@@ -62,8 +62,10 @@
 
   }
   .accordion-header{
-    background-color: red !important;
-  }
+    background-color: transparent
+     !important;
+    }
+    
 
   @media screen and (max-width:768px) {
     .accordian_col{
